@@ -1,0 +1,16 @@
+appId: com.github.deskmox
+productName: Deskmox
+directories:
+  output: release
+  buildResources: build
+files:
+  - dist/**/*
+  - main.js
+  - preload.js
+  - inject.js
+extraResources:
+  - Deskmox.png
+linux:
+  icon: Deskmox.png
+  target:
+    - AppImage
