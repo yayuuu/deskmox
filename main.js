@@ -42,7 +42,7 @@ app.on('certificate-error', (event, webContents, url, error, certificate, callba
 	console.log("Błąd certyfikatu dla " + url + ": " + error);
 	openedTabs.forEach((tab) => {
 		console.log(JSON.stringify(tab));
-		if(url.startsWith("https://"+tab.id)) {
+		if(url.startsWith("https://"+tab.id) || url.startsWith("wss://"+tab.id)) {
 			if(tab.ssl === false) {
 				allow = true;
 				event.preventDefault();
@@ -97,32 +97,39 @@ async function openProxmox(address) {
 			sandbox: false,
 		}
 	});
+
+	win.webContents.on("will-prevent-unload", (event) => {
+		event.preventDefault();
+	});
+
 	//win.webContents.openDevTools({ mode: "detach" });
 
-	// win.webContents.setWindowOpenHandler(({ url }) => {
-	// 	console.log("Intercepted xterm open:", url);
+	win.webContents.setWindowOpenHandler(({ url }) => {
+		console.log("Intercepted xterm open:", url);
 
-	// 	const child = new BrowserWindow({
-	// 		width: 1000,
-	// 		height: 700,
-	// 		closable: true,
-	// 		alwaysOnTop: false,
-	// 		autoHideMenuBar: true,
-	// 		webPreferences: {
-	// 			contextIsolation: true,
-	// 			nodeIntegration: false,
-	// 			sandbox: false,
-	// 		},
-	// 	});
+		const child = new BrowserWindow({
+			width: 1200,
+			height: 800,
+			resizable: true,
+			frame: true,         // dekoracje okna
+			fullscreen: false,
+			webPreferences: {
+				contextIsolation: true,
+				nodeIntegration: true,
+				sandbox: false,
+			},
+		});
 
-	// 	child.loadURL(url);
+		child.webContents.on("will-prevent-unload", (event) => {
+			event.preventDefault();
+		});
 
-	// 	child.on("closed", () => {
-	// 		console.log("terminal closed");
-	// 	});
+		win.on("closed", () => {
+			child.destroy();
+		});
 
-	// 	return { action: "deny" };
-	// });
+		child.loadURL(url);
+	});
 	
 	win.loadURL('https://' + address + ':8006/'); // ← podmień adres
 	win.webContents.once("did-finish-load", async () => {
