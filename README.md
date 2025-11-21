@@ -1,23 +1,24 @@
-## Deskmox
+![Logo](Deskmox.png)
+# Deskmox
 Proxmox desktop client
 
-# Building:
+## Building:
 ```
 npm install
 npm run build
 ```
 
-# Running:
+## Running:
 ```
 cd release
 ./Deskmox-{version}.AppImage
 ```
 
-# Contributing:
+## Contributing:
 
 I do not accept major pull requests right now. I want to push the application in the direction that I want first. It's in the very early stage right now.
 
-# Planned features:
+## Planned features:
 
 - Deleting servers
 - SSH access
